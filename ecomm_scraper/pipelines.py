@@ -27,9 +27,9 @@ class SaveProductPipeline(object):
         product.price = 100
         product.discount = 0
         product.final_price = 0
-        product.sku = item["name"][0]
-        product.name = item["name"][0]
-        product.description = item["description"][0]
+        product.sku = item["name"]
+        product.name = item["name"]
+        product.description = item["description"]
         product.quantity = 50
         product.order = 1
         product.views = 2
@@ -48,6 +48,5 @@ class SaveProductPipeline(object):
 
         finally:
             session.close()
-        print('#Saliendo del pipeline')
 
         return item
