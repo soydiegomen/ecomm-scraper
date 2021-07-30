@@ -7,4 +7,5 @@ import scrapy
 
 class ProductItem(scrapy.Item):
     name = scrapy.Field()
+    description = scrapy.Field()
     price = scrapy.Field()
