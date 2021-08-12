@@ -1,5 +1,6 @@
 import scrapy
-import os
+import traceback
+import sys
 from scrapy.loader import ItemLoader
 from scrapy.exceptions import CloseSpider
 from ecomm_scraper.items import ProductItem
@@ -19,12 +20,38 @@ class ProductsSpider(scrapy.Spider):
 
     def parse(self, response):
         try:
-            quotes = response.css('div.quote')
+            #locale.setlocale(locale.LC_ALL, 'en_US.UTF8')
+            #TODO Revisar porque no esta obteniendo la info de los productos
 
-            for quote in quotes:
+            productos = response.css('.product-card')
+            #productos = response.css('.grid__item')
+            for product in productos:
+                product_name = product.css('.product-card__name::text').get()
+
+                price_node = product.css('.product-card__price::text').getall()
+                #El precio esta en la posición 1
+                if(len(price_node) > 0):
+                    price_string = price_node[1]
+                    price_string = price_string.replace('MXN', '')
+                    price_string = price_string.replace('$', '')
+                    price_string = price_string.replace(',', '')
+                    price = price_string.strip()
+                    print(price)
+                
+                href = product.css("::attr(href)").extract()
+                if(len(href)):
+                    link_url = href[0]
+                    print('#href final ', link_url)
+
+            """ for quote in quotes:
                 item = ProductItem()
-                item['name'] = quote.css('.author::text').get()
-                item['description'] = quote.css('.text::text').get()
-                yield item
-        except:
+                item['name'] = quote.css('.product-card__name::text').get()
+                print('#cards', item['name'])
+                #item['description'] = quote.css('.text::text').get()
+                item['description'] = quote.css('.product-card__price::text').get()
+                item['price'] = quote.css('.product-card__price span::text').get()
+                yield item """
+        except Exception as e:
+            print('Exception happend', e)
+            print(traceback.format_exc())
             raise CloseSpider('parse_exception')

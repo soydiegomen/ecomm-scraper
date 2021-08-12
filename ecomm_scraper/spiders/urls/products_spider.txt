@@ -1,1 +1,1 @@
-http://quotes.toscrape.com/
+http://scrapyresult.local.com:8888/tienda-uno.html

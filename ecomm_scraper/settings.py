@@ -21,11 +21,11 @@ ROBOTSTXT_OBEY = True
 
 
 ITEM_PIPELINES = {
-    'ecomm_scraper.pipelines.SaveProductPipeline': 100
+    #'ecomm_scraper.pipelines.SaveProductPipeline': 100
 }
 
 CONNECTION_STRING = 'mysql+mysqlconnector://root:root@localhost:8889/storebot_db'
 
 
 #DMG Unable the logs
-#LOG_ENABLED=False
+LOG_ENABLED=False

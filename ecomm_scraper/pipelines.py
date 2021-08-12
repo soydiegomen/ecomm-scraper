@@ -27,7 +27,7 @@ class SaveProductPipeline(object):
         product.price = 100
         product.discount = 0
         product.final_price = 0
-        product.sku = item["name"]
+        product.sku = item["price"]
         product.name = item["name"]
         product.description = item["description"]
         product.quantity = 50
@@ -36,10 +36,14 @@ class SaveProductPipeline(object):
         product.instagram_likes = 3
         product.is_active = True
 
+        """ print('product', product)
+        print(item["name"])
+        print(item["price"])
+        print(item["description"]) """
 
         try:
-            session.add(product)
-            session.commit()
+            #session.add(product)
+            #session.commit()
             print('#Guardo un producto')
 
         except:

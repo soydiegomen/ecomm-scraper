@@ -16,6 +16,6 @@ class ClothingstoreSpider(scrapy.Spider):
             raise CloseSpider('get_start_url_exception')
 
     def parse(self, response):
-        filename = f'public_html/tienda-uno.html'
+        filename = f'public_html/tienda-dos.html'
         with open(filename, 'wb') as f:
             f.write(response.body)
