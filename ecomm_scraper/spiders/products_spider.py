@@ -1,7 +1,5 @@
 import scrapy
 import traceback
-import sys
-from scrapy.loader import ItemLoader
 from scrapy.exceptions import CloseSpider
 from ecomm_scraper.items import ProductItem
 from ecomm_scraper.spiders.helpers import SpiderHelper
@@ -14,6 +12,7 @@ class ProductsSpider(scrapy.Spider):
     def __init__(self, *args, **kwargs):
         try:
             spider_name = self.name
+            #TODO Redd JSON file with the details of the url to scrap (url, brandId, etc)
             self.start_urls = SpiderHelper().get_start_url(spider_name)
         except:
             raise CloseSpider('get_start_url_exception')
@@ -30,28 +29,36 @@ class ProductsSpider(scrapy.Spider):
 
                 price_node = product.css('.product-card__price::text').getall()
                 #El precio esta en la posición 1
-                if(len(price_node) > 0):
+                
+                price_string = ''
+                if(len(price_node) == 1):
+                    price_string = price_node[0]
+                if(len(price_node) > 1):
                     price_string = price_node[1]
-                    price_string = price_string.replace('MXN', '')
-                    price_string = price_string.replace('$', '')
-                    price_string = price_string.replace(',', '')
-                    price = price_string.strip()
-                    print(price)
+                price_string = price_string.replace('MXN', '')
+                price_string = price_string.replace('$', '')
+                price_string = price_string.replace(',', '')
+                price = price_string.strip()
                 
                 href = product.css("::attr(href)").extract()
+                link_url = ''
+                sku = ''
                 if(len(href)):
                     link_url = href[0]
-                    print('#href final ', link_url)
-
-            """ for quote in quotes:
+                    parts_url = link_url.split('/')
+                    #TODO sku must allow Null values
+                    sku = parts_url[-1] if len(parts_url) > 0 else ''
+                    print(f'sku {sku}')
+                
                 item = ProductItem()
-                item['name'] = quote.css('.product-card__name::text').get()
-                print('#cards', item['name'])
-                #item['description'] = quote.css('.text::text').get()
-                item['description'] = quote.css('.product-card__price::text').get()
-                item['price'] = quote.css('.product-card__price span::text').get()
-                yield item """
+                item['name'] = product_name
+                item['sku'] = sku
+                item['price'] = price
+                item['description'] = product_name
+                item['link_url'] = link_url
+                yield item
+
         except Exception as e:
-            print('Exception happend', e)
+            print('parse_exception', e)
             print(traceback.format_exc())
             raise CloseSpider('parse_exception')

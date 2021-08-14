@@ -3,9 +3,12 @@
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/items.html
 
-import scrapy
+from scrapy import Item, Field
 
-class ProductItem(scrapy.Item):
-    name = scrapy.Field()
-    description = scrapy.Field()
-    price = scrapy.Field()
+class ProductItem(Item):
+    name = Field()
+    sku = Field()
+    price = Field()
+    description = Field()
+    link_url = Field()
+    description = Field()

@@ -1,9 +1,5 @@
-import logging
-import re
-from itemadapter import ItemAdapter
+import traceback
 from sqlalchemy.orm import sessionmaker
-from scrapy.exceptions import DropItem
-from sqlalchemy.sql.elements import Null
 from  sqlalchemy.sql.expression import select
 from ecomm_scraper.spiders.models import Product, db_connect
 
@@ -23,30 +19,28 @@ class SaveProductPipeline(object):
 
         #Fill product
         product.brand_id = 1
-        product.url = 'http://localhost.com'
-        product.price = 100
+        product.url = item["link_url"]
+        product.price = float(item["price"])
         product.discount = 0
-        product.final_price = 0
-        product.sku = item["price"]
+        product.final_price = float(item["price"])
+        product.sku = item["sku"]
         product.name = item["name"]
         product.description = item["description"]
-        product.quantity = 50
+        product.quantity = 0
         product.order = 1
-        product.views = 2
-        product.instagram_likes = 3
+        product.views = 0
+        product.instagram_likes = 0
         product.is_active = True
-
-        """ print('product', product)
-        print(item["name"])
-        print(item["price"])
-        print(item["description"]) """
+        #print('product', product)
 
         try:
-            #session.add(product)
-            #session.commit()
+            session.add(product)
+            session.commit()
             print('#Guardo un producto')
 
-        except:
+        except Exception as e:
+            print('parse_exception', e)
+            print(traceback.format_exc())
             session.rollback()
             raise
 
