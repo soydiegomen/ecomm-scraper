@@ -7,13 +7,17 @@ from ecomm_scraper.spiders.helpers import SpiderHelper
 
 class ProductsSpider(scrapy.Spider):
     name = "products_spider"
+    config_file = "tienda-uno"
     start_urls = None
+    brand_id = None
 
     def __init__(self, *args, **kwargs):
-        try:
-            spider_name = self.name
-            #TODO Redd JSON file with the details of the url to scrap (url, brandId, etc)
-            self.start_urls = SpiderHelper().get_start_url(spider_name)
+        try:            
+            json_config = SpiderHelper().get_item_to_scrap(self.config_file)
+            if json_config['url'] and json_config['brand_id']:
+                self.brand_id = json_config['brand_id']
+                #The value of start_urls must be an array
+                self.start_urls = [json_config['url']]
         except:
             raise CloseSpider('get_start_url_exception')
 
@@ -48,7 +52,6 @@ class ProductsSpider(scrapy.Spider):
                     parts_url = link_url.split('/')
                     #TODO sku must allow Null values
                     sku = parts_url[-1] if len(parts_url) > 0 else ''
-                    print(f'sku {sku}')
                 
                 item = ProductItem()
                 item['name'] = product_name
@@ -56,6 +59,8 @@ class ProductsSpider(scrapy.Spider):
                 item['price'] = price
                 item['description'] = product_name
                 item['link_url'] = link_url
+                item['brand_id'] = self.brand_id
+
                 yield item
 
         except Exception as e:

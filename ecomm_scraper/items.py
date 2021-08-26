@@ -12,3 +12,4 @@ class ProductItem(Item):
     description = Field()
     link_url = Field()
     description = Field()
+    brand_id = Field()

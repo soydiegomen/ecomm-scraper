@@ -132,3 +132,4 @@ dmypy.json
 *.html
 ecomm_scraper/spiders/urls/pages_download.txt
 ecomm_scraper/spiders/urls/products_spider.txt
+ecomm_scraper/spiders/urls/*.json

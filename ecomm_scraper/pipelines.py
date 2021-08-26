@@ -1,6 +1,7 @@
 import traceback
 from sqlalchemy.orm import sessionmaker
 from  sqlalchemy.sql.expression import select
+from datetime import datetime
 from ecomm_scraper.spiders.models import Product, db_connect
 
 
@@ -12,13 +13,12 @@ class SaveProductPipeline(object):
         self.Session = sessionmaker(bind=engine)
 
     def process_item(self, item, spider):
-        print('#Entra a guardar la info de un produto')
         session = self.Session()
         
         product = Product()
 
         #Fill product
-        product.brand_id = 1
+        product.brand_id = item["brand_id"]
         product.url = item["link_url"]
         product.price = float(item["price"])
         product.discount = 0
@@ -31,12 +31,12 @@ class SaveProductPipeline(object):
         product.views = 0
         product.instagram_likes = 0
         product.is_active = True
-        #print('product', product)
+        product.created_at = datetime.now()
+        product.updated_at = datetime.now()
 
         try:
             session.add(product)
             session.commit()
-            print('#Guardo un producto')
 
         except Exception as e:
             print('parse_exception', e)
